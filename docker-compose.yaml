@@ -44,7 +44,6 @@ services:
     restart: always
     depends_on:
       - prom-server
-
   # Backend service
   backend:
     build: .
@@ -70,5 +69,4 @@ volumes:
   redis-data:
   # mongoDB data volume
   mongo-data:
-  # Grafana data volume
   grafana-data:
