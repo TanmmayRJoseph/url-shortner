@@ -98,7 +98,7 @@ export const refreshAccessTokenService = async (refreshToken: string) => {
     // ======================================================
 
     const tokenExists = user.refreshTokens.some(
-      (tokenObj) => tokenObj.token === refreshToken,
+      (tokenObj:any) => tokenObj.token === refreshToken,
     );
 
     if (!tokenExists) {
@@ -116,7 +116,7 @@ export const refreshAccessTokenService = async (refreshToken: string) => {
     // ======================================================
 
     user.refreshTokens = user.refreshTokens.filter(
-      (rt) => rt.token !== refreshToken,
+      (rt:any) => rt.token !== refreshToken,
     );
 
     // ======================================================
@@ -204,7 +204,7 @@ export const logoutService = async (userId: string, refreshToken: string) => {
     // ======================================================
 
     user.refreshTokens = user.refreshTokens.filter(
-      (tokenObj) => tokenObj.token !== refreshToken,
+      (tokenObj:any) => tokenObj.token !== refreshToken,
     );
 
     // ======================================================
