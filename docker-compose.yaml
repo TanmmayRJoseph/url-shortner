@@ -1,0 +1,74 @@
+version: "3.8"
+
+services:
+  # mongoDB service
+  mongodb:
+    image: mongo:6
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    restart: always
+
+  # Prometheus service
+  prom-server:
+    image: prom/prometheus
+    container_name: prom-server
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./src/configs/prometheus-config.yml:/etc/prometheus/prometheus.yml
+    restart: always
+    depends_on:
+      - backend
+
+  # Redis service
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    restart: always
+
+  # Grafana Service
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana-data:/var/lib/grafana
+    restart: always
+    depends_on:
+      - prom-server
+
+  # Backend service
+  backend:
+    build: .
+    container_name: backend
+    ports:
+      - "5000:5000"
+    depends_on:
+      - mongodb
+      - redis
+    environment:
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongodb:27017/myapp
+      - REDIS_URL=redis://redis:6379
+      - NODE_ENV=development
+      - ACCESS_TOKEN_SECRET="your_access_token_secret"
+      - REFRESH_TOKEN_SECRET="your_refresh_token_secret"
+      - ACCESS_TOKEN_EXPIRATION=1d
+      - REFRESH_TOKEN_EXPIRATION=7d
+    restart: always
+
+volumes:
+  # Redis data volume
+  redis-data:
+  # mongoDB data volume
+  mongo-data:
+  # Grafana data volume
+  grafana-data:
